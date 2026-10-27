@@ -105,7 +105,7 @@ var $=function(i){return document.getElementById(i)};
 var KEYS=['countdown','gift','story','questions','final'];
 
 // audio
-var A=new Audio(),cur='',muted=false;A.loop=true;
+var A=new Audio(),cur='',muted=false;A.loop=false;
 var any=KEYS.some(function(k){return SONGS[k]});
 if(any)$('mute').hidden=false;
 function play(k){var s=SONGS[k];if(!s||s===cur)return;cur=s;A.src=s;A.muted=muted;A.play().catch(function(){})}
@@ -129,11 +129,11 @@ function tick(){
 
 // countdown 5..1
 $('go').onclick=function(){
-  $('go').hidden=true;play('countdown');
+  $('go').hidden=true;if(any){cur=SONG;A.src=SONG;A.muted=muted;A.play().then(function(){A.pause();A.currentTime=0}).catch(function(){})}
   var n=5;$('cd').textContent=n;
   var t=setInterval(function(){
     n--;
-    if(n<1){clearInterval(t);show(1);return}
+    if(n<1){clearInterval(t);show(1);return}if(n===1&&any)A.play().catch(function(){});
     $('cd').textContent=n;
   },1000);
 };
